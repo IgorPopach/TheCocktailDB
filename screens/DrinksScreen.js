@@ -55,6 +55,26 @@ const DrinksScreen = () => {
         return <Drink {...{ image, name }} />
     };
 
+    const list = drinks.length === 0 ?
+        <View style={styles.centered}>
+            <Text>There is no data!</Text>
+            <Text>Please choose any category in the filter</Text>
+        </View> :
+        <SectionList
+            sections={drinks}
+            keyExtractor={(item, index) => item.id + index}
+            renderItem={renderItem}
+            renderSectionHeader={({ section: { category } }) => (
+                <Text style={styles.header}>{category}</Text>
+            )}
+            onRefresh={loadCategories}
+            refreshing={isRefreshing}
+            onEndReachedThreshold={0}
+            onEndReached={loadMoreDrinksHandler}
+            initialNumToRender={7}
+            ListFooterComponent={loading}
+            contentContainerStyle={styles.list}
+        />
     if (error) {
         return <View style={styles.centered}>
             <View style={styles.text}>
@@ -69,21 +89,7 @@ const DrinksScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {drinks.length !== 0 && <SectionList
-                sections={drinks}
-                keyExtractor={(item, index) => item.id + index}
-                renderItem={renderItem}
-                renderSectionHeader={({ section: { category } }) => (
-                    <Text style={styles.header}>{category}</Text>
-                )}
-                onRefresh={loadCategories}
-                refreshing={isRefreshing}
-                onEndReachedThreshold={0}
-                onEndReached={loadMoreDrinksHandler}
-                initialNumToRender={7}
-                ListFooterComponent={loading}
-                contentContainerStyle={styles.list}
-            />}
+            {list}
         </SafeAreaView>
     );
 };
